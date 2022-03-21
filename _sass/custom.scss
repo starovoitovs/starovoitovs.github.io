@@ -53,8 +53,11 @@ a.btn-primary:visited {
   object-fit: cover;
 }
 
-.card-title {
-  height: 48px;
+.card-body {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dot {
