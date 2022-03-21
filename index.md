@@ -21,4 +21,18 @@ layout: home
             </div>
         </div>
     </div>
+    <div class="col-12 col-md-4 mb-4">
+        <div class="card">
+            <img class="card-img-top" src="/assets/uav.png">
+            <div class="card-body">
+                <h5 class="card-title">Human action recognition</h5>
+                <p class="card-text">Classification of the human actions from skeletal sequences</p>
+                <p class="text-muted">
+                    <i class="dot dot-cpp mr-1"></i>
+                    C++
+                </p>
+                <a href="https://github.com/starovoitovs/uav/" class="btn btn-outline-primary">Code</a>
+            </div>
+        </div>
+    </div>
 </div>
