@@ -53,6 +53,10 @@ a.btn-primary:visited {
   object-fit: cover;
 }
 
+.card-title {
+  height: 48px;
+}
+
 .dot {
   height: 10px;
   width: 10px;
@@ -61,14 +65,6 @@ a.btn-primary:visited {
 
   &.dot-cpp {
     background-color: #f34b7d;
-  }
-
-  &.dot-javascript {
-    background-color: #f1e05a;
-  }
-
-  &.dot-php {
-    background-color: #6e9bf1;
   }
 
   &.dot-python {
