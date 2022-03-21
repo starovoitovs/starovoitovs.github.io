@@ -10,14 +10,18 @@ layout: home
         <div class="card">
             <img class="card-img-top" src="/assets/cfd.png">
             <div class="card-body">
-                <h5 class="card-title">Navier–Stokes equations</h5>
-                <p class="card-text">Joint practical lab in computational fluid dynamics</p>
-                <p class="text-muted">
-                    <i class="dot dot-cpp mr-1"></i>
-                    C++
-                </p>
-                <a href="https://imgur.com/a/Paf2qQP" class="btn btn-primary">Demo</a>
-                <a href="https://github.com/starovoitovs/fluid/" class="btn btn-outline-primary">Code</a>
+                <div>
+                    <h5 class="card-title">Navier–Stokes equations</h5>
+                    <p class="card-text">Joint practical lab in computational fluid dynamics</p>
+                    <p class="text-muted">
+                        <i class="dot dot-cpp mr-1"></i>
+                        C++
+                    </p>
+                    </div>
+                <div>
+                    <a href="https://imgur.com/a/Paf2qQP" class="btn btn-primary">Demo</a>
+                    <a href="https://github.com/starovoitovs/fluid/" class="btn btn-outline-primary">Code</a>
+                </div>
             </div>
         </div>
     </div>
@@ -25,13 +29,17 @@ layout: home
         <div class="card">
             <img class="card-img-top" src="/assets/uav.png">
             <div class="card-body">
-                <h5 class="card-title">Human action recognition</h5>
-                <p class="card-text">Classification of the human actions from skeletal sequences</p>
-                <p class="text-muted">
-                    <i class="dot dot-python mr-1"></i>
-                    Python
-                </p>
-                <a href="https://github.com/starovoitovs/uav/" class="btn btn-outline-primary">Code</a>
+                <div>
+                    <h5 class="card-title">Human action recognition</h5>
+                    <p class="card-text">Classification of the human actions from skeletal sequences</p>
+                </div>
+                <div>
+                    <p class="text-muted">
+                        <i class="dot dot-python mr-1"></i>
+                        Python
+                    </p>
+                    <a href="https://github.com/starovoitovs/uav/" class="btn btn-outline-primary">Code</a>
+                </div>
             </div>
         </div>
     </div>
