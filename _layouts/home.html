@@ -10,14 +10,13 @@ layout: default
         {% for post in site.posts %}
             {% unless post.show_in_nav == false %}
                 <li>
-                    {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
-                    <span class="post-meta">{{ post.date | date: date_format }}</span>
 
-                    <h2>
-                        <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a>
-                    </h2>
+                    <h3><a href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h3>
+                    {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+                    <span class="text-muted">{{ post.date | date: date_format }}</span>
 
                     <p>{{ post.description }}</p>
+                    <p>{{ post.excerpt }}</p>
                 </li>
             {% endunless %}
         {% endfor %}
