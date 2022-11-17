@@ -52,15 +52,16 @@ Notably, signatures satisfy universal approximation property: any continuous fun
 
 ### Log-signatures
 
-Note that the collection of signatures constitutes a Lie algebra with multiplication derived by the Chen's relation. Therefore, one can consider the logarithmic map on the said algebra:
+Note that the truncated signature takes values in the associative algebra $T^N\left(\mathbb{R}^d\right):=\oplus_{k=0}^N\left(\mathbb{R}^d\right)^{\otimes k}$, with tensor product service as the product in the algebra. The subset $\mathfrak{t}^N\left(\mathbb{R}^d\right) \equiv \left\\{g \in T^N\left(\mathbb{R}^d\right): \pi_0(g)=0\right\\}$ constitutes a Lie algebra, and one can consider the exponential map from $\mathfrak{t}^N\left(\mathbb{R}^d\right)$ to $1+\mathfrak{t}^N\left(\mathbb{R}^d\right)$, and its inverse – the logarithmic map: 
 
 $$
-\log (a)=\log (1+t)=\sum_{n=1}^{\infty} \frac{(-1)^{n-1}}{n} t^{\otimes n} \quad \forall a \in T(E)
+\begin{aligned}
+\exp (a) &= 1+\sum_{k=1}^N \frac{a^{\otimes k}}{k !} \\
+\log (1+t)&=\sum_{n=1}^{N} \frac{(-1)^{n-1}}{n} t^{\otimes n} \quad \forall a \in T(E)\\
+\end{aligned}
 $$
 
-And thus, the logarithmic map allows the passage to the log-signature, which constitutes a bijection between the tensor algebra and its log, while the commutator relationship allows to represent the log-signature in a parsimonious way and halves the number of features (since $\left[e_i, e_j\right]=-\left[e_j, e_i\right]$).
-
-For a 102-dimensional path we are dealing with, degree of the 2nd order signature is 10506 and 2nd order degree of the log-signature is 5253. Note that the use of log-signatures instead of vanilla signatures allows us to halve the number of features.
+Note that this definition corresponds to the classical power series of $\exp$ and $\log$, truncated up to level $N$, with usual powers replaced with tensor powers. Crucially, logarithmic map is a bijection between $1+\mathfrak{t}^N\left(\mathbb{R}^d\right)$ and $\mathfrak{t}^N\left(\mathbb{R}^d\right)$, and allows a parsimonious representation of the signature features, while being more robust against missing data. For a 102-dimensional path we are dealing with, degree of the 2nd order signature is 10506 and 2nd order degree of the log-signature is 5253. Note that the use of log-signatures instead of vanilla signatures allows us to halve the number of features.
 
 ![Comparison](/assets/posts/log-signatures/comparison.png)
 *Comparison of the signature and the log-signature.<br>Liao, Shujian, et al. "Learning stochastic differential equations using RNN with log signature features."*

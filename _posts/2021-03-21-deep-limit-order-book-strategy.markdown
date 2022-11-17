@@ -7,14 +7,22 @@ categories: algo-trading
 
 We build a neural net for prediction of market moves based on the order book history. The model is based on the [DeepLOB](https://arxiv.org/pdf/1808.03668.pdf) paper and consists of the CNN and LSTM components. A sequence of CNN layers enables representation learning (= feature learning), while LSTM module captures temporal dependence. As the input the model takes prices and volumes of 10 bids and asks closest to the mid-price for the 100 most recent timesteps (thus input is a 400-dimensional vector). The regressors are built based on the difference of future and past moving averages, the "memory" parameter (length of the sliding window) can be chosen based on the sampling rate and market activity/liquidity.
 
-We convert the problem into a classification task by quantizing the labels to -1/0/+1 based on the specified threshold hyperparameter. The model thus outputs probabilities of the down-move/no-move/up-move after several ticks. Both prediction horizon and memory parameter are tunable hyperparameters based on the market activity. If the threshold value is too high (i.e. we try to capture only sizable market moves), the classes are going to be imbalanced and the prediction power of the model lower. The threshold value is thus chosen to indicate a move of the magnitude of several dollars.
-
-![Training results](/assets/posts/deep-limit-order-book-strategy/training.png)
-*Training results (random guessing would give accuracy of ~33.3%)*
+> The code for this article can be found on [github](https://github.com/starovoitovs/deribot/).
 
 ## Data
 
-The ~3h worth of LOB data for BTC-PERPETUAL across several days was pulled from deribit.com. We use data from one day for training and validate/backtest using data for another day. Splitting the dataset from a single day and using one half to train and another to validate/backtest yields slightly better results (perhaps there is a presence of a certain regime in the market).
+We pulled ~3h worth of LOB data for BTC-PERPETUAL across several days from `deribit.com`. We use data from one day for training and validate/backtest using data for another day. Splitting the dataset from a single day and using one half to train and another to validate/backtest yields slightly better results (perhaps there is a presence of a certain regime in the market).
+
+## Preprocessing and feature engineering
+
+We convert the problem into a classification task by quantizing the labels to $-1/0/+1$ based on the specified threshold hyperparameter. The model thus outputs probabilities of the down-move/no-move/up-move after several ticks. Both prediction horizon and memory parameter are tunable hyperparameters based on the market activity. If the threshold value is too high (i.e. we try to capture only sizable market moves), the classes are going to be imbalanced and the prediction power of the model lower. The threshold value is thus chosen to indicate a move of the magnitude of several dollars.
+
+## Training
+
+The training metrics are given below.
+
+![Training results](/assets/posts/deep-limit-order-book-strategy/training.png)
+*Training results (random guessing would give accuracy of ~33.3%)*
 
 ![Predictions](/assets/posts/deep-limit-order-book-strategy/predictions.png)
 *Top: predictions for the probability of the market move for 1 minute period. <br>Bottom: best bid of BTC-PERPETUAL for the same period. Chosen strategy is colorbar at the bottom.*
@@ -35,8 +43,6 @@ Major problem is the fee structure. In order to capitalize on the predictions, o
 The model is, however, not perfectly accurate, and the predicted jumps are not always that large. In the paper there wasn't a lot of focus on the portfolio construction model, perhaps relying on the assumption that large players have a lot of market power and barely incur fees.
 
 One way out of it would be build a strategy with limit orders. However, as I can see it, limit orders could be used to capitalize on the excursion (a down-movement followed by an up-movement and vice versa), but not on a single move up or down.
-
-> The code for this article can be found on [github](https://github.com/starovoitovs/deribot/).
 
 # References
 
