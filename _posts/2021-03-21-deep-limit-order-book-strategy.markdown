@@ -1,15 +1,13 @@
 ---
 layout: post
 title:  "Deep prediction model based on recent limit order book history"
-date:   2021-03-21 12:35:11 +0200
+date:   2021-03-21
 categories: algo-trading
 ---
 
-> The code for this article can be found on [github](https://github.com/starovoitovs/deribot/).
+We build a neural net for prediction of market moves based on the order book history. The model is based on the [DeepLOB](https://arxiv.org/pdf/1808.03668.pdf) paper and consists of the CNN and LSTM components. A sequence of CNN layers enables representation learning (= feature learning), while LSTM module captures temporal dependence. As the input the model takes prices and volumes of 10 bids and asks closest to the mid-price for the 100 most recent timesteps (thus input is a 400-dimensional vector). The regressors are built based on the difference of future and past moving averages, the "memory" parameter (length of the sliding window) can be chosen based on the sampling rate and market activity/liquidity.
 
-We consider a deep model for prediction of market moves based on the history of the limit order book. The model is based on the [DeepLOB](https://arxiv.org/pdf/1808.03668.pdf) paper and consists of the CNN and LSTM components. A sequence of CNN layers enables representation learning while LSTM module should capture temporal dependence. As input the model takes prices and volumes of 10 bids and asks closest to the mid-price for the 100 most recent timesteps (thus input is a 400-dimensional vector). The regressors are built based on the difference of future and past moving averages, the "memory" parameter (length of the sliding window) can be chosen based on the sampling rate and market activity/liquidity.
-
-We then convert the problem into a classification task by quantizing the labels to -1/0/+1 based on the specified threshold hyperparameter. The model thus outputs probabilities of the down-move/no-move/up-move after several ticks. Both prediction horizon and memory parameter are tunable hyperparameters based on the market activity. If the threshold value is too high (i.e. we try to capture only sizable market moves), the classes are going to be imbalanced and the prediction power of the model lower. The threshold value is thus chosen to indicate a move of the magnitude of several dollars.
+We convert the problem into a classification task by quantizing the labels to -1/0/+1 based on the specified threshold hyperparameter. The model thus outputs probabilities of the down-move/no-move/up-move after several ticks. Both prediction horizon and memory parameter are tunable hyperparameters based on the market activity. If the threshold value is too high (i.e. we try to capture only sizable market moves), the classes are going to be imbalanced and the prediction power of the model lower. The threshold value is thus chosen to indicate a move of the magnitude of several dollars.
 
 ![Training results](/assets/posts/deep-limit-order-book-strategy/training.png)
 *Training results (random guessing would give accuracy of ~33.3%)*
@@ -37,6 +35,8 @@ Major problem is the fee structure. In order to capitalize on the predictions, o
 The model is, however, not perfectly accurate, and the predicted jumps are not always that large. In the paper there wasn't a lot of focus on the portfolio construction model, perhaps relying on the assumption that large players have a lot of market power and barely incur fees.
 
 One way out of it would be build a strategy with limit orders. However, as I can see it, limit orders could be used to capitalize on the excursion (a down-movement followed by an up-movement and vice versa), but not on a single move up or down.
+
+> The code for this article can be found on [github](https://github.com/starovoitovs/deribot/).
 
 # References
 

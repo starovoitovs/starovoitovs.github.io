@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "White blood cell classification with an adversarial algorithm"
-date:   2022-10-03 20:37:00 +0200
+date:   2022-12-03
 categories: machine-learning
 ---
 
