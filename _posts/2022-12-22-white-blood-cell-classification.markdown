@@ -1,42 +1,42 @@
 ---
 layout: post
-title:  "White blood cell classification with an adversarial algorithm"
+title:  "Domain adaptation with an adversarial algorithm for blood cell classification"
 date:   2022-12-22
 categories: machine-learning
 ---
 
 Hematology is the study of blood, blood-forming tissues, and blood diseases, and accurate diagnosis is critical for the effective treatment of blood disorders. One of the main duties of hematologists is classification of blood cells: doctors analyze blood smears of their patients and evaluate content of pathological blood cells that might hint at leukemia, anemia and other diseases. In practice this tedious task is more often than not performed manually, but it clearly lends itself to modern image recognition technology.
 
-Traditionally, diagnostic and prognostic tools in hematology have been trained on relatively small and homogenous datasets. However, these datasets may not accurately reflect the diversity and complexity of real-world patient populations. This can lead to lower accuracy and less effective treatment decisions. Moreover, images coming from different labs vary in sharpness, brightness, contrast, scale and other properties. Therefore, one aims to develop an algorithm that would be agnostic towards these secondary factors and can confidently discriminate cell images regardless of their origin, which creates a use case for **domain adaptation**. Domain adaptation techniques can help to improve the generalizability of diagnostic and prognostic tools by allowing them to be trained on larger and more diverse datasets, which reduces the error rate and improves the overall accuracy of these tools.
+Traditionally, diagnostic and prognostic tools in hematology have been trained on relatively small and homogenous datasets. However, these datasets may not accurately reflect the diversity and complexity of real-world patient populations. This can lead to lower accuracy and less effective treatment decisions. Moreover, images coming from different labs vary in sharpness, brightness, contrast, scale and other properties. Therefore, one aims to develop an algorithm that would be agnostic towards these secondary factors and can confidently discriminate cell images regardless of their origin.
+
+This problem makes a great use case for **domain adaptation**. Domain adaptation techniques can help to improve the generalizability of diagnostic and prognostic tools by allowing them to be trained on larger and more diverse datasets, which reduces the error rate and improves the overall accuracy of these tools.
 
 Additionally, domain adaptation techniques can also be useful for addressing the problem of imbalanced datasets in hematology. Imbalanced datasets, where the number of samples in one class is significantly higher than the number in another class, can cause diagnostic and prognostic tools to be biased towards the majority class. Domain adaptation techniques can help to correct this bias and improve the performance of these tools on imbalanced datasets.
 
 ## Dataset
 
-We work with the dataset from the [Help A Hematologist Out challenge](https://helmholtz-data-challenges.de/web/challenges/challenge-page/93/overview). We are given two *source* datasets with labelled images of individual blood cells, and a third smaller *target* dataset with unlabelled images. 
+We work with the dataset from the [Help A Hematologist Out challenge](https://helmholtz-data-challenges.de/web/challenges/challenge-page/93/overview). We are given two *source* datasets with **labelled images** of individual blood cells, and a third smaller *target* dataset with **unlabelled images**. The classes are labelled by medical professionals, but even for them sometimes it's hard to discriminate between the classes, since some classes correspond to different stages of the cell's development, which will be apparent later from the confusion matrix.
 
-![Model architecture](/assets/posts/white-blood-cells/datasets.png)
+We are thus facing an unsupervised domain adaptation problem. This stands in contrast with the last year's [VisDA challenge](http://ai.bu.edu/visda-2021/) where the labels for the validation set were present. Therefore, we aim to build a model that will simultaneously learn correlations in the source datasets while maintaining the ability to extrapolate onto the target dataset.
+
+![Datasets](/assets/posts/white-blood-cells/datasets.png)
 *Blood cell images from the source datasets (left and center) and target dataset (right).*
 
-Two datasets are available for training. We will call the dataset by the name of the first author who published the data. Below you can find a short description and the link to the original papers:
+We will call the dataset by the name of the first author who published the data. Below you can find a short description and the link to the original papers:
 
 * `Acevedo_20` dataset: the dataset (Acevedo et al., 2020) contains a total of 17,092 images of individual normal cells, acquired using the automatic analyzer CellaVision DM96, in the Core Laboratory at the Hospital Clinic of Barcelona. The images were obtained during the period 2015-2019 from blood smears collected from patients without infections, hematologic or oncologic diseases, and free of any pharmacologic treatment at the moment of their blood extraction. The images are in jpg format and the size is 360x363. All the images were obtained in the color space RGB and were annotated by expert clinical pathologists.
 * `Matek_19` dataset: the Munich AML Morphology Dataset (Matek et al., 2019) contains 18,365 expert-labeled single-cell images taken from peripheral blood smears of 100 patients diagnosed with Acute Myeloid Leukemia at Munich University Hospital between 2014 and 2017, as well as 100 patients without signs of hematological malignancy. The images were obtained in the color space RGB and their size is 400x400 pixels.
 
 The goal of this challenge is to achieve high performance, especially a high f1 macro score, on a third dataset, called `WBC`.
 
-* `WBC1` dataset (validation set): a small subpart of the WBC dataset will be downloadable during phase 1. It is unlabeled and should be used for evaluation and domain adaptation techniques.
-* `WBC2` dataset (test set): a second similar subpart of the WBC dataset will become available for download during phase 2 of the challenge, i.e. on the last day, 24 hours before submissions close.
+* `WBC1` dataset (validation set): a small subpart of the WBC dataset. It is **unlabeled** and can be used for training, evaluation and domain adaptation techniques.
+* `WBC2` dataset (test set): a second similar subpart of the WBC dataset.
 
 
 ![Class cardinalities](/assets/posts/white-blood-cells/cardinalities.png)
 *Class distribution in the source datasets.*
 
-Apparently, the class distribution in the datasets is uneven and roughly corresponds to the actual proportions of the white blood cells in blood smears. We have to take that into account since the assignment is scored based on macro f1-score, which gives equal weight to each class regardless of its cardinality.
-
-The classes are labelled by medical professionals, but even for them sometimes it's hard to discriminate between the classes, since some classes correspond to different stages of the cell's development, which will be apparent from the confusion matrix.
-
-We are facing an unsupervised domain adaptation problem. This stands in contrast with the last year's [VisDA challenge](http://ai.bu.edu/visda-2021/) where the labels for the validation set were present. We want to build a model that will simultaneously learn correlations in the source datasets while maintaining the ability to extrapolate onto the target dataset.
+Apparently, the class distribution in the datasets is uneven. It roughly corresponds to the actual proportions of white blood cells in blood smears. We have to take that into account since the assignment is scored based on **macro f1-score**, which gives equal weight to each class regardless of its cardinality.
 
 ### Preprocessing
 
@@ -70,12 +70,12 @@ $$
 \Phi_\rho(x) \begin{cases}0 & \rho \leq x \\ 1-x / \rho & 0 \leq x \leq \rho \\ 1 & x \leq 0\end{cases}.
 $$
 
-(Note that cut-off function also inverts the margin.) The **margin** and **margin loss** are defined as
+The **margin** and **margin loss** are defined as
 
 $$
 \begin{aligned}
-\rho_f(x, y) &\frac{1}{2}\left(f(x, y)-\max _{y^{\prime} \neq y} f\left(x, y^{\prime}\right)\right) \\
-\operatorname{err}_D^{(\rho)}(f) &\mathbb{E}_{D} \left[\Phi_{\rho} \circ \rho_f(x, y)\right]
+\rho_f(x, y) &= \frac{1}{2}\left(f(x, y)-\max _{y^{\prime} \neq y} f\left(x, y^{\prime}\right)\right) \\
+\operatorname{err}_D^{(\rho)}(f) &= \mathbb{E}_{D} \left[\Phi_{\rho} \circ \rho_f(x, y)\right]
 \end{aligned}
 $$
 
@@ -89,8 +89,8 @@ Then, for some hypothesis class $\mathcal F$ we define **margin disparity** and 
 
 $$
 \begin{aligned}
-\operatorname{disp}_D^{(\rho)}\left(f^{\prime}, f\right) &\mathbb{E}_D \left[\Phi_{\rho} \circ \rho_{f^{\prime}}\left(\cdot, h_f\right)\right] \\
-d_{f, \mathcal{F}}^{(\rho)}(P, Q) &\sup _{f^{\prime} \in \mathcal{F}}\left(\operatorname{disp}_Q^{(\rho)}\left(f^{\prime}, f\right)-\operatorname{disp}_P^{(\rho)}\left(f^{\prime}, f\right)\right)
+\operatorname{disp}_D^{(\rho)}\left(f^{\prime}, f\right) &= \mathbb{E}_D \left[\Phi_{\rho} \circ \rho_{f^{\prime}}\left(\cdot, h_f\right)\right] \\
+d_{f, \mathcal{F}}^{(\rho)}(P, Q) &= \sup _{f^{\prime} \in \mathcal{F}}\left(\operatorname{disp}_Q^{(\rho)}\left(f^{\prime}, f\right)-\operatorname{disp}_P^{(\rho)}\left(f^{\prime}, f\right)\right)
 \end{aligned}
 $$
 
@@ -158,7 +158,7 @@ We have `resnet18` serving as the feature extractor $\psi$. Importantly, $f$ is 
 
 ## Training
 
-We conflate both labelled source datasets `Acevedo_20` and `Matek_19` into one source dataset. Using different datasets regularizes the problem and prevents overfitting on a single datasets. We use the `WBC1` dataset in the training for the domain adaptation *elaborate here*, and hold out the `WBC2` dataset for evaluation.
+We conflate both labelled source datasets `Acevedo_20` and `Matek_19` into one source dataset. Using different datasets regularizes the problem and prevents overfitting on each single dataset. We use the unlabelled `WBC1` dataset for the domain adaptation, and hold out the `WBC2` dataset for evaluation.
 
 As a result of hyperparameter tuning, we settle for the following values of the hyperparameters:
 
@@ -186,7 +186,7 @@ where $X=F^TF$.
 
 ### Results
 
-We see that while the transfer loss is plateaus early, the model keeps on learning to discriminate classes on the source dataset. However, adjusting the trade-off $\eta$ between classification and transfer loss did not yield score on the validation dataset.
+We see that while the transfer loss is plateaus early, the model keeps on learning to discriminate classes on the source dataset. However, adjusting the trade-off $\eta$ between classification and transfer loss did not yield improved score on the validation dataset.
 
 ![Loss and accuracy](/assets/posts/white-blood-cells/loss_acc.png)
 *Classification and transfer loss (left) and class accuracy (right) during training.*
@@ -214,4 +214,3 @@ The main result is the following: we are able to achieve roughly the same macro 
 * Musgrave, Kevin, Serge Belongie, and Ser-Nam Lim. "Benchmarking Validation Methods for Unsupervised Domain Adaptation." arXiv preprint arXiv:2208.07360 (2022).
 * Ganin, Yaroslav, and Victor Lempitsky. "Unsupervised domain adaptation by backpropagation." International conference on machine learning. PMLR, 2015.
 * Jiang, Junguang, Bo Fu, and Mingsheng Long. "Transfer-learning-library." (2020).
-
