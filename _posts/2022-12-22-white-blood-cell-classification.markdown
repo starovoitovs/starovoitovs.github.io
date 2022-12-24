@@ -27,16 +27,15 @@ We will call the dataset by the name of the first author who published the data.
 * `Acevedo_20` dataset: the dataset (Acevedo et al., 2020) contains a total of 17,092 images of individual normal cells, acquired using the automatic analyzer CellaVision DM96, in the Core Laboratory at the Hospital Clinic of Barcelona. The images were obtained during the period 2015-2019 from blood smears collected from patients without infections, hematologic or oncologic diseases, and free of any pharmacologic treatment at the moment of their blood extraction. The images are in jpg format and the size is 360x363. All the images were obtained in the color space RGB and were annotated by expert clinical pathologists.
 * `Matek_19` dataset: the Munich AML Morphology Dataset (Matek et al., 2019) contains 18,365 expert-labeled single-cell images taken from peripheral blood smears of 100 patients diagnosed with Acute Myeloid Leukemia at Munich University Hospital between 2014 and 2017, as well as 100 patients without signs of hematological malignancy. The images were obtained in the color space RGB and their size is 400x400 pixels.
 
-The goal of this challenge is to achieve high performance, especially a high f1 macro score, on a third dataset, called `WBC`.
+We aim to achieve a high f1 macro score on a third dataset, called `WBC`.
 
 * `WBC1` dataset (validation set): a small subpart of the WBC dataset. It is **unlabeled** and can be used for training, evaluation and domain adaptation techniques.
 * `WBC2` dataset (test set): a second similar subpart of the WBC dataset.
 
-
 ![Class cardinalities](/assets/posts/white-blood-cells/cardinalities.png)
 *Class distribution in the source datasets.*
 
-Apparently, the class distribution in the datasets is uneven. It roughly corresponds to the actual proportions of white blood cells in blood smears. We have to take that into account since the assignment is scored based on **macro f1-score**, which gives equal weight to each class regardless of its cardinality.
+Apparently, the class distribution in the datasets is uneven. It roughly corresponds to the actual proportions of white blood cells in blood smears. We have to take that into account, since we aim to maximize the **macro f1-score**, which gives equal weight to each class regardless of its cardinality.
 
 ### Preprocessing
 
@@ -54,7 +53,6 @@ Rotate(always_apply=False, p=0.5, limit=(-180, 180) interpolation=1, border_mode
 RandomScale(always_apply=False, p=0.5, interpolation=1, scale_limit=(-0.19999999999999996, 0.19999999999999996))
 Resize(always_apply=False, p=1, height=224, width=224, interpolation=1)
 Normalize(always_apply=False, p=1.0, mean=[0.8209, 0.7282, 0.8364], std=[0.1649, 0.2523, 0.0945], max_pixel_value=255.0)
-ToTensorV2(always_apply=True, p=1.0, transpose_mask=False)
 
 {% endhighlight %}
 
@@ -158,6 +156,24 @@ We have `resnet18` serving as the feature extractor $\psi$. Importantly, $f$ is 
 
 ## Training
 
+### Validation metrics
+
+Since we are in the unsupervised setup, merely using the conventional loss/accuracy criterion on the validation portion of the source dataset for model selection is not sufficient. Instead, we incorporate discrepancy loss into model selection criterion. We consider the two following discrepancy metrics: entropy and soft neighborhood density (SND). **Entropy** measures the confidence of the model:
+
+$$
+\mathrm { Entropy }=\frac{1}{N} \sum_{i=1}^N H\left(p_i\right)\\
+$$
+
+where the entropy function is given by $H\left(p_i\right)=-\sum_{j} p_{i j} \log p_{i j}$, and $p_i$ is the softmax output of the $i$-th sample. **Soft neighborhood density (SND)** computes entropy of the softmaxed target similarity matrix:
+
+$$
+\mathrm{SND}=H\left(\operatorname{softmax}_\tau(\widehat{X})\right)
+$$
+
+where $F$ is $L^2$ normalized target feature vectors, $X=F^TF$, $\hat X$ is $X$ with diagonal elements removed, and $\mathrm{softmax}_\tau$ is the softmax function with temperature $\tau$. Softmax temperature allows to (de-)emphasize the most confident predictions.
+
+### Training setup
+
 We conflate both labelled source datasets `Acevedo_20` and `Matek_19` into one source dataset. Using different datasets regularizes the problem and prevents overfitting on each single dataset. We use the unlabelled `WBC1` dataset for the domain adaptation, and hold out the `WBC2` dataset for evaluation.
 
 As a result of hyperparameter tuning, we settle for the following values of the hyperparameters:
@@ -166,23 +182,7 @@ As a result of hyperparameter tuning, we settle for the following values of the 
 * margin: $\gamma=4$
 * SND temperature: $\beta=0.005$
 
-To account for imbalanced classes, the classes are weighted by their inverse frequency in the source dataset. The model is trained with a batch size of 32 and stopped early after 30 epochs. The learning rate is set to 0.001 and decays by a factor of 0.1 every 20 epochs. The model is trained on a single Nvidia RTX6000 GPU.
-
-### Validation metrics
-
-Since we are in the unsupervised setup, merely using the conventional loss/accuracy criterion on the validation portion of the source dataset for model selection is not sufficient. Instead, we incorporate both classification and discrepancy loss into model selection criterion. We consider the two following discrepancy metrics: simple entropy and soft neighborhood density (SND). **Entropy** measures the confidence of the model:
-
-$$
-\mathrm { Entropy }=\frac{1}{N} \sum_{i=1}^N H\left(p_i\right)\\
-$$
-
-where the entropy function is given by $H\left(p_i\right)=-\sum_{j} p_{i j} \log p_{i j}$. **Soft neighborhood density (SND)** computes entropy of the softmaxed target similarity matrix:
-
-$$
-\mathrm{SND}=H\left(\operatorname{softmax}_\tau(\widehat{X})\right)
-$$
-
-where $X=F^TF$.
+To account for imbalanced classes, the classes are weighted by their inverse frequency in the source dataset. The model is trained with a batch size of 32 and stopped early after 50 epochs. The learning rate is set to 0.001 and decays by a factor of 0.1 every 20 epochs. The model is trained on a single Nvidia RTX6000 GPU.
 
 ### Results
 
@@ -194,12 +194,12 @@ We see that while the transfer loss is plateaus early, the model keeps on learni
 ![Loss and accuracy](/assets/posts/white-blood-cells/entropy_snd.png)
 *Entropy and SND during training.*
 
-The confusion matrix for the source dataset is presented below (remember that labels for the validation and test datasets are not available). We see that the model is able to discriminate between the classes, but is not able to distinguish between the two types of neutrophils. It's not unexpected, since the two types of neutrophils are very similar in appearance.
+The confusion matrix for the source dataset is presented below (remember that labels for the validation and test datasets are not available). We see that the model is pretty much able to discriminate the classes, while the most misclassifications are between two types of neutrophils. It's not unexpected, since the two types of neutrophils are very similar in appearance.
 
 ![Confusion matrix](/assets/posts/white-blood-cells/cfmatrix.png)
 *Confusion matrix for the source dataset.*
 
-The main result is the following: we are able to achieve roughly the same macro f1 score and the testing dataset as on the validation dataset, which we used in training for domain adaptation:
+Ultimately, we are able to achieve roughly the same macro f1 score and the testing dataset as on the validation dataset, which we used in training for domain adaptation. The score compares with the top submissions of the challenge.
 
 |          | WBC1                | WBC2                |
 |----------|---------------------|---------------------|
