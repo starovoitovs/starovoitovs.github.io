@@ -9,7 +9,7 @@ Hematology is the study of blood, blood-forming tissues, and blood diseases, and
 
 Traditionally, diagnostic and prognostic tools in hematology have been trained on relatively small and homogenous datasets. However, these datasets may not accurately reflect the diversity and complexity of real-world patient populations. This can lead to lower accuracy and less effective treatment decisions. Moreover, images coming from different labs vary in sharpness, brightness, contrast, scale and other properties. Therefore, one aims to develop an algorithm that would be agnostic towards these secondary factors and can confidently discriminate cell images regardless of their origin.
 
-This problem makes a great use case for **domain adaptation**. Domain adaptation techniques can help to improve the generalizability of diagnostic and prognostic tools by allowing them to be trained on larger and more diverse datasets, which reduces the error rate and improves the overall accuracy of these tools.
+This problem provides a great use case for **domain adaptation**. Domain adaptation techniques can help to improve the generalizability of diagnostic and prognostic tools by allowing them to be trained on larger and more diverse datasets, which reduces the error rate and improves the overall accuracy of these tools.
 
 Additionally, domain adaptation techniques can also be useful for addressing the problem of imbalanced datasets in hematology. Imbalanced datasets, where the number of samples in one class is significantly higher than the number in another class, can cause diagnostic and prognostic tools to be biased towards the majority class. Domain adaptation techniques can help to correct this bias and improve the performance of these tools on imbalanced datasets.
 
