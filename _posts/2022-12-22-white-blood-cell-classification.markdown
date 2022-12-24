@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Domain adaptation with an adversarial algorithm for blood cell classification"
-date:   2022-12-22
+date:   2022-12-24
 categories: machine-learning
 ---
 
