@@ -170,7 +170,7 @@ $$
 \mathrm{SND}=H\left(\operatorname{softmax}_\tau(\widehat{X})\right)
 $$
 
-where $F$ is $L^2$ normalized target feature vectors, $X=F^TF$, $\hat X$ is $X$ with diagonal elements removed, and $\mathrm{softmax}_\tau$ is the softmax function with temperature $\tau$. Softmax temperature allows to (de-)emphasize the most confident predictions.
+where $F$ is $L^2$ normalized target feature vectors, $X=F^TF$, $\hat X$ is $X$ with diagonal elements removed, and $\mathrm{softmax}_\tau$ is the softmax function with temperature $\tau$. Softmax temperature allows to (de-)emphasize the most confident predictions. High SND indicates that each feature is close to other features and entails good clustering. However, one should be careful, since trivial model mapping all inputs into a single cluster will also yield high SND score.
 
 ### Training setup
 
