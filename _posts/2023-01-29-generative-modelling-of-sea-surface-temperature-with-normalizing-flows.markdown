@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Generative modelling of sea surface temperature with normalizing flows"
-date:   2023-01-29
+date:   2023-02-11
 categories: machine-learning
 ---
 
