@@ -222,7 +222,7 @@ where $R_{1, n\_{\text {test }}} \leq \cdots \leq R\_{n\_{\text {test }}, n\_{\t
 
 ## Training
 
-We use `pytorch` for the implementation of the models, and make use of the [nflows](https://pypi.org/project/nflows/) library for the normalizing flows. We also use `ray` and `hyperopt` for hypertuning, and `mlflow` for model tracking.
+We implement the model in `pytorch` and use the [nflows](https://pypi.org/project/nflows/) library, which contains the implementation of the masked autoregressive flow. We also use `ray` and `hyperopt` for hyperparameter tuning, and `mlflow` for model tracking.
 
 We subdivide the training set into training, validation and test splits. We use Adam optimizer with learning rate 0.0001, and select the following hyperparameters for the MAF:
 
@@ -240,7 +240,7 @@ The validation metrics extremize quite early in the training, and attain minimum
 ![Sampled histogram](/assets/posts/generative-modelling-sst/val_kendall.png)
 *Absolute Kendall error on the validation set during training.*
 
-The sample weights' model ended giving preference to more recent sample in the dataset, and the trend model incorporated a positive trend in time, in line with our expectations. We now take a look at the 1D and 2D marginals of the modelled sampling distribution:
+The sample weights model ended up giving preference to more recent samples in the dataset, and the trend model incorporated a positive trend for SST at all stations, in line with our expectations. We now take a look at the 1D and 2D marginals of the modelled sampling distribution:
 
 ![Sampled histogram](/assets/posts/generative-modelling-sst/hist2d_test_ba_pred.png)
 *Histograms of sampled 1D and 2D marginals, with additional depiction of the 1D marginals on the test set.*
