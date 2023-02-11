@@ -5,7 +5,9 @@ date:   2023-01-29
 categories: machine-learning
 ---
 
-In this post we look at a generative model of the evolution of ocean temperature, based on real data provided by Mercator Ocean. The goal is to simulate potential future values of sea surface temperate (SST) with spatial dependency between stations, in particular to address extreme climate events within the context of stress testing and, more broadly, climate risk management. We look at the *flow-based* deep generative model built together with colleagues from HU Berlin, within the scope of the [GenHack2](https://www.polytechnique.edu/en/education/academic-and-research-departments/applied-mathematics-department-depmap/student-event/genhack-2-hackathon-generative-modelling) data challenge, co-organized Chair Stress test, Risk management and Financial steering (Ecole polytechnique, BNP Paribas) and Mercator Ocean. The model learns the distribution of SST data, including multidimensional dependencies, and allows generation of daily climate scenarios for the purposes of stress testing.
+In this post we look at the deep flow-based generative model of the evolution of ocean temperature, based on real data provided by Mercator Ocean. We aim to learn the distribution of SST data, including multidimensional dependencies, and simulate potential future values of sea surface temperate (SST) with spatial dependency between stations, in particular to address extreme climate events within the context of stress testing and, more broadly, climate risk management.
+
+This model was part of the submission in the [GenHack2](https://www.polytechnique.edu/en/education/academic-and-research-departments/applied-mathematics-department-depmap/student-event/genhack-2-hackathon-generative-modelling) data challenge we took part together with colleagues from HU Berlin, co-organized Chair Stress test, Risk management and Financial steering (Ecole polytechnique, BNP Paribas) and Mercator Ocean.
 
 ![SST map](/assets/posts/generative-modelling-sst/sstmap.png)
 *Map of sea surface temperatures (SST).<br>Image source: ESA SST CCI and C3S reprocessed [sea surface temperature analyses](https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_REP_OBSERVATIONS_010_024/description).*
@@ -34,13 +36,13 @@ According to the [Assessment Report](https://www.ipcc.ch/report/ar6/wg1/chapter/
 
 ## Problem setup
 
-We are given daily measurements at 6 stations at unknown locations from 1981-09-01 to 2007-12-31. The goal is to generate a distribution of SST at the 6 stations for the next 9 years, one sample a day, from 2008-01-01 to 2016-12-31. The model is supposed to be a *generative* model: it takes Gaussian noise $\mathbf z$ as the input, and outputs the vector $\mathbf x$, corresponding to SST at 6 stations on some day in the above interval:
+We are given daily measurements at 6 stations at unknown locations from 1981-09-01 to 2007-12-31. The goal is to generate a distribution of SST at the 6 stations, at unknown locations, for the next 9 years, one sample a day, from 2008-01-01 to 2016-12-31. The model takes the Gaussian noise $\mathbf z$ as the input, and outputs the vector $\mathbf x$, corresponding to SST at 6 stations on some day in the above interval:
 
 $$
 f(\mathbf z)=\mathbf x.
 $$
 
-This contrasts with e.g. classical autoregressive time series models, where the forecasts are short-term and deterministic. As is common for generative models, the model is evaluated according to the distance between true and modelled sampling distributions, so the order in which the samples are generated does not matter.
+This contrasts with e.g. classical autoregressive time series models, where forecasts are short-term and deterministic. As is common for generative models, the model is evaluated according to the distance between true and modelled sampling distributions, so the order in which the samples are generated does not matter.
 
 Seasonality is removed from the data. The data is provided in the form of a CSV file, where each row corresponds to a single day and each column corresponds to a single station. The SST measurements are usually normalized with respect to some benchmark (e.g. average temperature in some past period). The first column is the date, and the remaining columns are the SST measurements at each station:
 
@@ -57,7 +59,7 @@ By looking at yearly means, we observe that the SST do indeed exhibit a positive
 ![Trend](/assets/posts/generative-modelling-sst/trend.png)
 *Trend of the sea surface temperatures across 6 stations.*
 
-The histograms of 1D and 2D marginals of the density we are looking to model are depicted below. The table below summarizing temperature correlations between different stations indicates that temperatures between some stations is more correlated than between the others (perhaps due to their proximity).
+The histograms of 1D and 2D marginals of the density we are looking to model are depicted below. The table below summarizing temperature correlations between different stations indicates that temperatures between some stations is more correlated than between some others (perhaps due to their geographical proximity).
 
 ![True histogram](/assets/posts/generative-modelling-sst/hist2d_test_true.png)
 *Histograms of true 1D and 2D marginal densities for the test set.*
