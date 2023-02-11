@@ -73,10 +73,6 @@ a:link, a:active, a:visited, a:hover {
 
 .post-content[itemprop="articleBody"] {
 
-  li {
-    //margin: 15px auto;
-  }
-
   img {
     display: block;
     margin: 30px auto;
@@ -102,57 +98,10 @@ a:link, a:active, a:visited, a:hover {
     overflow-y: hidden;
   }
 
-}
-
-/* All buttons */
-.share-buttons {
-}
-
-/* Each button */
-.share-button {
-
-  margin: 0px;
-  margin-bottom: 10px;
-  margin-right: 3px;
-  border: 1px solid #D3D6D2;
-  padding: 5px 10px 5px 10px;
-
-  span {
-    font-family: $font-family-sans-serif;
+  h3 {
+    font-size: 24px !important;
   }
 
-  /* Facebook button */
-  &.fa-facebook-official {
-    color: #3b5998;
-  }
-
-  &.fa-facebook-official:hover {
-    background-color: #3b5998;
-  }
-
-  /* Twitter button */
-  &.fa-twitter {
-    color: #55acee;
-  }
-
-  &.fa-twitter:hover {
-    background-color: #55acee;
-  }
-
-  /* LinkedIn button */
-  &.fa-linkedin {
-    color: #007bb5;
-  }
-
-  &.fa-linkedin:hover {
-    background-color: #007bb5;
-  }
-
-}
-
-.share-button:hover {
-  opacity: 1;
-  color: #ffffff;
 }
 
 blockquote {
