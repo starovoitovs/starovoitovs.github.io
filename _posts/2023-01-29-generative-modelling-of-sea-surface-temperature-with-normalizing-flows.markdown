@@ -73,7 +73,9 @@ The table below summarizing temperature correlations between different stations 
 
 ### Normalizing flows
 
-We build a generative model for sea surface temperature with **normalizing flows**. Normalizing flows use a composition of invertible transformations to map a simple distribution to a more complex one. Thereby, one can easily sample from and evaluate density of the simple distribution, and then use composition of simple learnable transformations to obtain the sample from and density of the complex distribution. Thus, unlike in some other generational models, such as GAN or VAE, the transformations in the normalized flows are chosen so that the likelihood can be computed analytically, so the training proceeds by log-likelihood maximization. These simple transformations will be parametrized in our case by neural nets (hence *deep* flow-based model), which allows implementation of the entire model as a neural net and training by backpropagation.
+We build a generative model for sea surface temperature with **normalizing flows**. Despite not enjoying the same popularity as other cutting-edge generative models, the complex shape of the distribution and low-dimensional setup make the normalizing flows a great candidate to attack the problem. Normalizing flows models are particularly useful when the data distribution is highly non-Gaussian, has multiple modes, or has complex correlations between the variables.
+
+Normalizing flows model the data distribution by transforming a simple base distribution, such as a Gaussian, into a more complex one. Thereby, one can easily sample from and evaluate density of the simple distribution, and then use composition of simple learnable transformations to obtain the sample from and density of the complex distribution. Thus, unlike in some other generational models, such as GAN or VAE, the transformations in the normalized flows are chosen so that the likelihood can be computed analytically, so the training proceeds by log-likelihood maximization. These simple transformations will be parametrized in our case by neural nets (hence *deep* flow-based model), which allows implementation of the entire model as a neural net and training by backpropagation.
 
 Specifically, let us denote $z$ the variable in the latent space, and $x$ the variable in the data space, and we consider a bijective invertible transformation $f$, which maps one onto the other:
 
@@ -243,9 +245,9 @@ The validation metrics extremize quite early in the training, and attain minimum
 The sample weights model ended up giving preference to more recent samples in the dataset, and the trend model incorporated a positive trend for SST at all stations, in line with our expectations. We now take a look at the 1D and 2D marginals of the modelled sampling distribution:
 
 ![Sampled histogram](/assets/posts/generative-modelling-sst/hist2d_test_ba_pred.png)
-*Histograms of sampled 1D and 2D marginals, with additional depiction of the 1D marginals on the test set.*
+*Histograms of the 1D (in orange) and 2D marginals sampled from the modelled distribution,<br>with additional depiction of the 1D marginals on the test set (in blue).*
 
-If we compare with the marginals of the data distribution from the figure in the beginning of the article, we can see that the normalizing flow has been able to accurately represent the complex non-linearities of the density, while accurately capturing both 1D marginals (low Anderson-Darling distance) and dependencies between different stations (low Kendall absolute error).
+If we compare with the marginals of the data distribution on the figure at the beginning of the article, we can see that the normalizing flow has been able to accurately represent the complex non-linearities of the density, while accurately capturing both 1D marginals and dependency between different stations.
 
 > The code for this article is available on [github](https://github.com/saschagaudlitz/Flash).
 
