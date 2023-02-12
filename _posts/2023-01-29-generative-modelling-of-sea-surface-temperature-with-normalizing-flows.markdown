@@ -5,7 +5,7 @@ date:   2023-02-11
 categories: machine-learning
 ---
 
-In this post we look at the deep flow-based generative model of the evolution of ocean temperature, based on real data provided by Mercator Ocean. We aim to learn the distribution of SST data, including multidimensional dependencies, and simulate potential future values of sea surface temperate (SST) with spatial dependency between stations, in particular to address extreme climate events within the context of stress testing and, more broadly, climate risk management.
+In this post we look at the deep flow-based generative model of the evolution of ocean temperature, based on real data provided by Mercator Ocean. We aim to learn the distribution of sea surface temperature (SST) data, including multidimensional dependencies, and generate potential future values of SST with spatial dependency between stations, in particular to simulate extreme climate scenarios within the context of stress testing and, more broadly, climate risk management.
 
 This model was part of the submission in the [GenHack2](https://www.polytechnique.edu/en/education/academic-and-research-departments/applied-mathematics-department-depmap/student-event/genhack-2-hackathon-generative-modelling) data challenge we took part together with colleagues from HU Berlin, co-organized Chair Stress test, Risk management and Financial steering (Ecole polytechnique, BNP Paribas) and Mercator Ocean.
 
@@ -36,7 +36,7 @@ According to the [Assessment Report](https://www.ipcc.ch/report/ar6/wg1/chapter/
 
 ## Problem setup
 
-We are given daily measurements at 6 stations at unknown locations from 1981-09-01 to 2007-12-31. The goal is to generate a distribution of SST at the 6 stations, at unknown locations, for the next 9 years, one sample a day, from 2008-01-01 to 2016-12-31. The model takes the Gaussian noise $\mathbf z$ as the input, and outputs the vector $\mathbf x$, corresponding to SST at 6 stations on some day in the above interval:
+We are given daily measurements at 6 stations at unknown locations from 1981-09-01 to 2007-12-31. The goal is to generate the distribution of SST at those 6 stations for the next 9 years, one sample a day, from 2008-01-01 to 2016-12-31. The model takes the Gaussian noise $\mathbf z$ as the input, and outputs the vector $\mathbf x$, corresponding to SST at 6 stations on some day in the above interval:
 
 $$
 f(\mathbf z)=\mathbf x.
@@ -44,7 +44,7 @@ $$
 
 This contrasts with e.g. classical autoregressive time series models, where forecasts are short-term and deterministic. As is common for generative models, the model is evaluated according to the distance between true and modelled sampling distributions, so the order in which the samples are generated does not matter.
 
-Seasonality is removed from the data. The data is provided in the form of a CSV file, where each row corresponds to a single day and each column corresponds to a single station. The SST measurements are usually normalized with respect to some benchmark (e.g. average temperature in some past period). The first column is the date, and the remaining columns are the SST measurements at each station:
+Seasonality is removed from the data. The data is provided in the form of a CSV file, where each row corresponds to a single day and each column corresponds to a single station. The SST measurements are usually normalized with respect to some benchmark (e.g. relative to pre-industrial levels). The first column is the date, and the remaining columns are the SST measurements at each station:
 
 | date       | s1     | s2      | s3     | s4     | s5     | s6     |
 |------------|--------|---------|--------|--------|--------|--------|
@@ -59,10 +59,12 @@ By looking at yearly means, we observe that the SST do indeed exhibit a positive
 ![Trend](/assets/posts/generative-modelling-sst/trend.png)
 *Trend of the sea surface temperatures across 6 stations.*
 
-The histograms of 1D and 2D marginals of the density we are looking to model are depicted below. The table below summarizing temperature correlations between different stations indicates that temperatures between some stations is more correlated than between some others (perhaps due to their geographical proximity).
+The histograms of 1D and 2D marginals of the density we are looking to model are depicted below.
 
 ![True histogram](/assets/posts/generative-modelling-sst/hist2d_test_true.png)
 *Histograms of true 1D and 2D marginal densities for the test set.*
+
+The table below summarizing temperature correlations between different stations indicates that temperatures between some stations is more correlated than between some others (perhaps due to their geographical proximity).
 
 ![Correlation matrix](/assets/posts/generative-modelling-sst/corr.png)
 *Correlation matrix of the SST observations across the stations.*
@@ -85,7 +87,7 @@ $$
 p(\mathbf{x})=\pi(\mathbf{z})\left|\operatorname{det} \frac{d \mathbf{z}}{d \mathbf{x}}\right|=\pi\left(f^{-1}(\mathbf{x})\right)\left|\operatorname{det} \frac{d f^{-1}}{d \mathbf{x}}\right|.
 $$
 
-A common choice for $\pi$ is standard Gaussian, as it also is in our case. Making use of the **inverse function theorem**, it holds for the Jacobian of the inverse:
+A common choice for $\pi$ is standard Gaussian, as it also is in our case. Making use of the **inverse function theorem** (Jacobian of the inverse is inverse of the Jacobian), it holds for the Jacobian of the inverse:
 
 $$
 \left|\operatorname{det} \frac{d f^{-1}}{d \mathbf{x}}\right| = \left|\operatorname{det} \frac{d f}{d \mathbf{z}}\right|^{-1}
@@ -143,13 +145,13 @@ $$
 \mathbf z_{i-1} \sim p_{i-1}(\mathbf z_{i-1}), \qquad \mathbf z_i := f_i(\mathbf z_{i-1}), \qquad \mathbf z_{i-1} = f_i^{-1}(\mathbf z_{i})
 $$
 
-Invoking the above change of variable formula, the inverse function theorem (Jacobian of the inverse is inverse of the Jacobian) and inverse of the determinant, we obtain: 
+Invoking again the change of variable formula, the inverse function theorem and formula for the determinant of the inverse, we obtain: 
 
 $$
 p_i\left(\mathbf{z}_i\right) = p_{i-1}\left(f_i^{-1}\left(\mathbf{z}_i\right)\right)\left|\operatorname{det} \frac{d f_i^{-1}}{d \mathbf{z}_i}\right| = p_{i-1}\left(\mathbf{z}_{i-1}\right)\left|\operatorname{det} \frac{d f_i}{d \mathbf{z}_{i-1}}\right|^{-1}.
 $$
 
-Iterating the product over $i$, denoting by $\mu_{ij}$ and $\alpha_{ij}$ the location and log-scale parameters in the $i$-th model and $j$-th component, using the Jacobian determinant formula for the autoregressive model $\eqref{eq: absdet of the triangular jacobian}$, and passing to the log-likehood, we obtain:
+Iterating the product over $i$, denoting by $\mu_{ij}$ and $\alpha_{ij}$ the location and log-scale parameters of the $i$-th model and $j$-th component, using the Jacobian determinant formula for the autoregressive model $\eqref{eq: absdet of the triangular jacobian}$, and passing to the log-likehood, we obtain:
 
 $$
 \log p(\mathbf{x})=\log \pi_0\left(\mathbf{z}_0\right)-\sum_{i=1}^K \log \left|\operatorname{det} \frac{d f_i}{d \mathbf{z}_{i-1}}\right| = \log \pi_0\left(\mathbf{z}_0\right)-\sum_{i=1}^K \sum_{j=1}^D \alpha_{ij}.
@@ -172,13 +174,13 @@ The trend evident from the figure in the Problem Setup section leads us to addit
 
 ## Evaluation
 
-For a vector $\mathbf \xi$, we denote by $\xi_{i,n}$ the order statistic. We also denote by $\widetilde {\mathbf x}$ the samples of the real data.
+The modelled distribution is going to be compared with the real data to evaluate how well the model can capture the underlying distribution of SST data. The model is scored based on two metrics: distance between 1-dimensional marginals in terms of the **Anderson-Darling distance**, and **absolute Kendall error** which captures the dependency between different stations.
+
+For a vector $\mathbf \xi$, we denote by $\xi_{i,n}$ the order statistic, and $n_{\text {test}}$ is the total number of samples in the test set. We denote by ${\mathbf x}$ the samples of the modelled distribution and by $\widetilde {\mathbf x}$ the samples of the real data.
 
 ### One-dimensional marginals: Anderson-Darling distance
 
-The sampled distribution is going to be compared to the real data to see how well the model can capture the underlying distribution of SST data. The model is scored based on two
-metrics: 1-dimensional marginals in terms of the **Anderson-Darling distance**. We denote by $\widetilde{u}\_{i, n\_{\text {test }}}^s$ the model probability of a generated
-variable $f(\mathbf z)=\mathbf x$ for a specific station $s$ such that
+We denote by $\widetilde{u}\_{i, n\_{\text {test }}}^s$ the model probability of a generated variable $f(\mathbf z)=\mathbf x$ for a specific station $s$:
 
 $$
 \widetilde{u}_{i, n_{\text {test }}}^s=\frac{1}{n_{\text {test }}+2}\left(\sum_{j=1}^{n_{\text {test }}} 1\left\{\widetilde x_j^s \leq x_{i, n_{\text {test }}}^s\right\}+1\right)
@@ -212,13 +214,11 @@ $$
 \widetilde{R}_i=\frac{1}{n_{\text {test }}-1} \sum_{j \neq i}^{n_{\text {test }}} 1\left\{\tilde{x}_j^1<\tilde{x}_i^1, \ldots, \widetilde{x}_j^d<\widetilde{x}_i^d\right\}.
 $$
 
-Then, the **absolute Kendall error** is given as the $L^1$ norm
+Then, the **absolute Kendall error** is then given as the $L^1$ distance between those vectors:
 
 $$
-\mathcal{L}_D(Z)=\frac{1}{n_{\text {test }}} \sum_{i=1}^{n_{\text {test }}}\left|R_{i, n_{\text {test }}}-\widetilde{R}_{i, n_{\text {test }}}\right|
+\mathcal{L}_D(Z)=\frac{1}{n_{\text {test }}} \sum_{i=1}^{n_{\text {test }}}\left|R_{i, n_{\text {test }}}-\widetilde{R}_{i, n_{\text {test }}}\right|.
 $$
-
-where $R_{1, n\_{\text {test }}} \leq \cdots \leq R\_{n\_{\text {test }}, n\_{\text {test }}}$ are the order statistics of $\left\\{R_1, \ldots, R_{n_{\text {test }}}\right\\}$.
 
 ## Training
 
