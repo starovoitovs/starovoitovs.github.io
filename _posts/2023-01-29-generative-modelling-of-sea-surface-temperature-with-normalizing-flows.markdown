@@ -133,6 +133,15 @@ $$
 \end{equation}
 $$
 
+### Masked autoregressive flow
+
+**Masked autoregressive flow (MAF)** is an effective implementation of the autoregressive flow paradigm. It makes use of the **masked autoencoder for distribution estimation (MADE)**, which is a feedforward network allowing computation of the autoregressive parameters $\mu_i$ and $\alpha_i$ in a single forward pass. The autoregressive property is achieved by applying binary mask to the weights of the feedforward net:
+
+![MADE](/assets/posts/generative-modelling-sst/made.png)
+*MADE illustration with a simple three-layer MLP.<br>Germain, Mathieu, et al. “Made: Masked autoencoder for distribution estimation.” International conference on machine learning. PMLR, 2015.*
+
+In the case of MADE, the binary mask matrices are constructed based on the ordering of the hidden units, so that the element of the mask matrix equals 1 if the order of the target hidden unit is larger or equal to the order of the source hidden unit, otherwise it's 0.
+
 ### Stacking models
 
 Now, instead of considering a single transformation $f$, we stack multiple autoregressive models $f_i$ into a deeper flow:
@@ -160,15 +169,6 @@ $$
 $$
 
 Choosing for $\pi_0$ the standard Gaussian, as suggested before, we obtain a tractable formula for the log-likelihood.
-
-### Masked autoregressive flow
-
-**Masked autoregressive flow (MAF)** is an effective implementation of the autoregressive flow paradigm. It makes use of the **masked autoencoder for distribution estimation (MADE)**, which is a feedforward network allowing computation of the autoregressive parameters $\mu_i$ and $\alpha_i$ in a single forward pass. The autoregressive property is achieved by applying binary mask to the weights of the feedforward net:
-
-![MADE](/assets/posts/generative-modelling-sst/made.png)
-*MADE illustration with a simple three-layer MLP.<br>Germain, Mathieu, et al. “Made: Masked autoencoder for distribution estimation.” International conference on machine learning. PMLR, 2015.*
-
-In the case of MADE, the binary mask matrices are constructed based on the ordering of the hidden units, so that the element of the mask matrix equals 1 if the order of the target hidden unit is larger or equal to the order of the source hidden unit, otherwise it's 0.
 
 ### Ad-hoc adjustments
 
