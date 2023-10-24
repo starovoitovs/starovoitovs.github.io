@@ -21,20 +21,23 @@
 title: Steepest Ascent
 email: starovoitovs@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Konstantins Starovoitovs personal website.
+  Konstantins Starovoitovs - Homepage
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://starovoitovs.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
-
-#disqus:
-#  shortname: starovoitovs-github-io
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - jekyll-sitemap
+
+defaults:
+  -
+    scope:
+      path: "assets/**/*.pdf"
+    values:
+      sitemap: false
 
 # Exclude from processing.
 # The following items will not be processed, by default.
