@@ -6,6 +6,8 @@ categories: machine-learning
 comments: true
 ---
 
+> The code for this article is available on [github](https://github.com/starovoitovs/deepfbsde).
+
 In this article we elaborate on the deep solver we came up with the colleagues from HU Berlin for the solution of the stochastic control problem including jumps, as part of the [Helmholtz GPU Hackathon 2022](https://www.aicampus.berlin/event/helmholtz-gpu-hackathon-2022). Generally, any stochastic control problem can be rewritten as a forward-backward SDE (FBSDE), presenting an alternative to the dynamic programming approach with Hamilton-Jacobi-Bellman equations. Such systems are widespread in mathematical finance, arising in pricing of contingent claims, risk management problems and calculations of value adjustments (xVA) to account for the counterparty risk. In this article, we extend the [deep FBSDE solver](https://link.springer.com/article/10.1007/s40304-017-0117-6) by E, Han and Jentzen, by making a deep ansatz for the control process $R$ corresponding to jumps, by analogy with the deep ansatz by E et al. for the control process $Z$ corresponding to the diffusive part.
 
 ## Stochastic control problem
@@ -180,8 +182,6 @@ We display convergence of the training loss and initial value for the Experiment
 *Training loss (left) and initial value of the adjoint process $Y_0$ (right) for the Experiment #2.<br> The reference value $e$ is given in grey. All 20 components of $Y_0$ converge uniformly to the reference value.*
 
 We conclude that our extension of the deep FBSDE method performs well even in the presence of the jumps.
-
-> The code for this article is available on [github](https://github.com/starovoitovs/deepfbsde).
 
 # References
 

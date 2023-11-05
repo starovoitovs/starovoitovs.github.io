@@ -5,6 +5,8 @@ date:   2021-03-21
 categories: algo-trading
 ---
 
+> The code for this article is available on [github](https://github.com/starovoitovs/deribot/).
+
 We build a deep model for prediction of market moves based on the recent order book history. The model is based on the [DeepLOB](https://arxiv.org/pdf/1808.03668.pdf) paper and consists of the convolutional and recurrent elements. A sequence of convolutional layers enables automatic feature learning, while the recurrent module captures temporal dependence. Portfolio constructed based on the model predictions leads to positive long-term P&L on the testing dataset, modulo transaction fees.
 
 ## Data
@@ -79,8 +81,6 @@ The P&L graph above is surely way too optimistic, since it assumes we can execut
 Lowest fees in the crypto are ~0.05% for liquidity takers, and 0.00% or even a small rebate for liquidity makers. There are some exchanges boasting no fees, but they have huge spreads and ticks. Given the current value of around ~30k for BTC/USD pair, it amounts to <span>$</span>15 per trade. So the model has to predict a market move of ><span>$</span>15 on average. Obviously, the objective is to remove the number of trades and only enter a position if the signal is strong enough to beat the ~<span>$</span>15 fees per contract purchased.
 
 The model is, however, not perfectly accurate, and the predicted jumps are not always that large. In the paper there wasn't a lot of focus on the portfolio construction model, perhaps relying on the assumption that large players have a lot of market power and barely incur fees. One could consider Kelly criterion and size the bets based on the confidence of the model prediction, but it did not yield significant improvement in this case. Alternatively, one could build a market making strategy. For example, using model predictions as short-term alpha indicators in the market making problem by Cartea and Wang.
-
-> The code for this article is available on [github](https://github.com/starovoitovs/deribot/).
 
 # References
 

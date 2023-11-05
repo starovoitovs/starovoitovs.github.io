@@ -6,3 +6,4 @@
 
 * Add `Proceedings` section
 * Add tags
+* Add CV and pdf

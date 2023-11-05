@@ -5,6 +5,8 @@ date:   2021-06-10
 categories: machine-learning
 ---
 
+> The code for this article is available on [github](https://github.com/RemyMess/MMVRC_ICCV_2021_Skeleton_based_Action_Recognition).
+
 In this article we look at the signature-based algorithm for skeleton-based human action recognition implemented by our team of colleagues from Berlin and Oxford, as part of the [ICCVW2021 MMVRAC competition](https://sutdcv.github.io/multi-modal-video-reasoning/#/datasets). We implement the [PT-Logsig-RNN model](https://arxiv.org/abs/2110.13008) by Liao et al., which combines extraction of the log-signature with convolutional and recurrent modules to transform the spatio-temporal skeletal data.
 
 ## Dataset
@@ -90,8 +92,6 @@ The validation loss reaches its minimum fairly quickly, and the validation accur
 
 ![TensorFlow model](/assets/posts/log-signatures/iccv_loss_acc.png)
 *Training loss and accuracy.*
-
-> The code for this article is available on [github](https://github.com/RemyMess/MMVRC_ICCV_2021_Skeleton_based_Action_Recognition).
 
 # References
 

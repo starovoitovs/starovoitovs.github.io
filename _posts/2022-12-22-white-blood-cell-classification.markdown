@@ -5,6 +5,8 @@ date:   2022-12-24
 categories: machine-learning
 ---
 
+> The code for this article is available on [github](https://github.com/starovoitovs/wbc/).
+
 Hematology is the study of blood, blood-forming tissues, and blood diseases, and accurate diagnosis is critical for the effective treatment of blood disorders. One of the main duties of hematologists is classification of blood cells: doctors analyze blood smears of their patients and evaluate content of pathological blood cells that might hint at leukemia, anemia and other diseases. In practice this tedious task is more often than not performed manually, but it clearly lends itself to modern image recognition technology.
 
 Traditionally, diagnostic and prognostic tools in hematology have been trained on relatively small and homogenous datasets. However, these datasets may not accurately reflect the diversity and complexity of real-world patient populations. This can lead to lower accuracy and less effective treatment decisions. Moreover, images coming from different labs vary in sharpness, brightness, contrast, scale and other properties. Therefore, one aims to develop an algorithm that would be agnostic towards these secondary factors and can confidently discriminate cell images regardless of their origin.
@@ -205,8 +207,6 @@ Ultimately, we are able to achieve roughly the same macro f1 score and the testi
 |----------|---------------------|---------------------|
 | micro f1 | 0.7436              | 0.6778              |
 | macro f1 | <mark>0.6635</mark> | <mark>0.6513</mark> |
-
-> The code for this article is available on [github](https://github.com/starovoitovs/wbc/).
 
 # References
 
