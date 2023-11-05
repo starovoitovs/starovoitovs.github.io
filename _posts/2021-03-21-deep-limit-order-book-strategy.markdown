@@ -5,9 +5,9 @@ date:   2021-03-21
 categories: algo-trading
 ---
 
-> The code for this article is available on [github](https://github.com/starovoitovs/deribot/).
-
 We build a deep model for prediction of market moves based on the recent order book history. The model is based on the [DeepLOB](https://arxiv.org/pdf/1808.03668.pdf) paper and consists of the convolutional and recurrent elements. A sequence of convolutional layers enables automatic feature learning, while the recurrent module captures temporal dependence. Portfolio constructed based on the model predictions leads to positive long-term P&L on the testing dataset, modulo transaction fees.
+
+> The code for this article is available on [github](https://github.com/starovoitovs/deribot/).
 
 ## Data
 

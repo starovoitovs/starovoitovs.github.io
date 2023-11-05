@@ -5,7 +5,11 @@ date:   2022-12-24
 categories: machine-learning
 ---
 
+In this article, we'll present a machine learning model for classification of blood cells in hematology. We'll emphasize how this algorithm leverages image recognition technology and, importantly, utilizes domain adaptation techniques to effectively handle variations in images from different labs, resulting in more accurate and practical diagnostics.
+
 > The code for this article is available on [github](https://github.com/starovoitovs/wbc/).
+
+## Problem setup
 
 Hematology is the study of blood, blood-forming tissues, and blood diseases, and accurate diagnosis is critical for the effective treatment of blood disorders. One of the main duties of hematologists is classification of blood cells: doctors analyze blood smears of their patients and evaluate content of pathological blood cells that might hint at leukemia, anemia and other diseases. In practice this tedious task is more often than not performed manually, but it clearly lends itself to modern image recognition technology.
 
