@@ -9,7 +9,7 @@ In this post we look at the deep flow-based generative model of the evolution of
 
 This model was part of the submission in the [GenHack2](https://www.polytechnique.edu/en/education/academic-and-research-departments/applied-mathematics-department-depmap/student-event/genhack-2-hackathon-generative-modelling) data challenge we took part together with colleagues from HU Berlin, co-organized [Chair Stress test, Risk management and Financial steering](http://www.cmap.polytechnique.fr/~stresstest/) (Ecole polytechnique, BNP Paribas) and [Mercator Ocean](https://www.mercator-ocean.eu/en/).
 
-> The code for this article is available on [github](https://github.com/saschagaudlitz/Flash).
+> The code for this article is available on [github](https://github.com/starovoitovs/sst-gen).
 
 ![SST map](/assets/posts/generative-modelling-sst/sstmap.png)
 *Map of sea surface temperatures (SST).<br>Image source: ESA SST CCI and C3S reprocessed [sea surface temperature analyses](https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_REP_OBSERVATIONS_010_024/description).*
