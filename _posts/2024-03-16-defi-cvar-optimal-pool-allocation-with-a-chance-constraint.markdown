@@ -183,8 +183,8 @@ $$
     \begin{equation}
     \label{eq:returns}
     \begin{aligned}
-        \overline x_{burn} &:= \overline{x} \left(\widetilde w_j \odot w_i^{-1}\right) \in\mathbb{R}^{N_{batch}}, \\
-        \overline y_{burn} &:= \overline{y} \left(\widetilde w_j \odot w_i^{-1}\right) \in\mathbb{R}^{N_{batch}}, \\
+        \overline x_{burn} &:= \overline{x} \left(\widetilde w_j \odot w_i^{-1}\right) / \sum_{k=1}^{N_{pools}} \widetilde w_{jk} \in\mathbb{R}^{N_{batch}}, \\
+        \overline y_{burn} &:= \overline{y} \left(\widetilde w_j \odot w_i^{-1}\right) / \sum_{k=1}^{N_{pools}} \widetilde w_{jk} \in\mathbb{R}^{N_{batch}}, \\
         \overline x_{swap} &:= \frac{\overline y_{burn} \odot (1-\overline{\phi}) \odot \overline R^X}{\overline R^Y + (1-\overline{\phi}) \odot \overline y_{burn}} \in\mathbb{R}^{N_{batch}}, \\
         \overline r &:= \log(\overline x_{burn} + \overline x_{swap}) - \log(x_0) \in\mathbb{R}^{N_{batch}},
     \end{aligned}
