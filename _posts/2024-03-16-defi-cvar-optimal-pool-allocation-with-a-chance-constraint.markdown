@@ -145,7 +145,7 @@ $$
     \end{align}
 $$
 
-where $r_T=\log \left(x_T\right)-\log \left(x_0\right)$ is the final performance of the LP, $\theta$ is the distribution of the initial wealth across the $n$ pools and $\alpha, \zeta$, and $q$ are in the file params.py. The conditional Value-at-Risk (also called expected shortfall) at level $\alpha \in(0,1)$ for a variable $r$ (regarded as the performance of a portfolio) is
+where $r_T=\log \left(x_T\right)-\log \left(x_0\right)$ is the final performance of the LP, $w$ is the distribution of the initial wealth across the $n$ pools and $\alpha, \zeta$, and $q$ are in the file params.py. The conditional Value-at-Risk (also called expected shortfall) at level $\alpha \in(0,1)$ for a variable $r$ (regarded as the performance of a portfolio) is
 
 $$
     \operatorname{CVaR}(r)=\frac{1}{1-\alpha} \int_\alpha^1 \operatorname{VaR}_s(r) d s \approx \mathrm{E}\left[-r \mid-r \geq \operatorname{VaR}_\alpha\right],
