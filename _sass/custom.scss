@@ -19,11 +19,15 @@ h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.2rem;
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 2rem;
 }
 
 h3 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 
@@ -152,4 +156,12 @@ blockquote {
       background: lighten($primary, 3);
     }
   }
+}
+
+.site-title {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-family: 'Noto Sans', sans-serif;
+  text-decoration: none;
+  letter-spacing: 0px;
 }
